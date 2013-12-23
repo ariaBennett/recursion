@@ -1,6 +1,16 @@
+// helpers
+Object.size = function(obj) {
+  var size = 0, key;
+  for (key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      size++;
+    }
+  }
+    return size;
+};
+
 function stringifyJSON(val) {
   debugMode = true;
-  if (debugMode) {console.log("val == " + val);}
 
   if (typeof(val) == "number") {
     return val.toString();
@@ -27,14 +37,43 @@ function stringifyJSON(val) {
     var type = Object.prototype.toString.call(val);
     if (type == "[object Array]") {
       var items = "";
+      var valLength = val.length;
       _.each(val, function(item){
           items = items + stringifyJSON(item);
+          if (valLength > 1) {
+            items = items + ",";
+            valLength -= 1;
+          }
       });
       return "[" + items + "]";
     }
   }
 
-  if (debugMode) {console.log("val == " + val);}
+  if (typeof(val) == "object") {
+    var type = Object.prototype.toString.call(val);
+    if (type == "[object Object]") {
+      var items = "";
+      var valLength = Object.size(val);
+      console.log(valLength);
+      _.each(val, function(item, key){
+        if ((typeof(item) !== "function") && (item !== undefined)) {
+          items = items + stringifyJSON(key) + ":" + stringifyJSON(item);
+          if (valLength > 1) {
+            items = items + ",";
+            valLength -= 1;
+          }
+        }
+        else {
+          valLength -= 1;
+        }
+      });
+      return "{" + items + "}";
+    }
+  }
+
+  if ((typeof(val) == "function") || (val == undefined)) {
+    return "";
+  }
 
   return val;
 
@@ -51,6 +90,7 @@ describe("stringifyJSON", function(){
       expect(result).toEqual(expected);
     });
 
+    objectWithInvalidAttributes = nonStringifiableValues;
     objectWithInvalidAttributes.forEach(function(obj){
       var result = stringifyJSON(obj);
       var expected = JSON.stringify(obj);
