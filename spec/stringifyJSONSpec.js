@@ -54,7 +54,6 @@ function stringifyJSON(val) {
     if (type == "[object Object]") {
       var items = "";
       var valLength = Object.size(val);
-      console.log(valLength);
       _.each(val, function(item, key){
         if ((typeof(item) !== "function") && (item !== undefined)) {
           items = items + stringifyJSON(key) + ":" + stringifyJSON(item);
