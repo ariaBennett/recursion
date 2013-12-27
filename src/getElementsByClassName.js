@@ -4,41 +4,38 @@
 // };
 
 // But in stead we're going to implement it from scratch:
+  all = [];
 var getElementsByClassName = function (className) {
   var objects = document.body.children;
-  var matches = [];
-  all = [];
+  matches = [];
 
-  var findClass = function(object) {
-    _.each(object.classList, function(potentialClass){
-      console.log("potentialClass: " + potentialClass);
-      if (className == potentialClass) {
-        console.log("found it: " + object);
-        matches.push(object);
+  var hasClass = function(query, target) {
+    var foundClass = false;
+    _.each(target.classList, function(potentialClass){
+      if (query === potentialClass) {
+        foundClass = true;
       }
     });
+    return foundClass;
   };
 
-  var findSubobjects = function(object) {
-    try {
-    all.push(object);
-      _.each(object, function(subObj){
-        if (subObj.hasChildNodes) {
-          console.log("subObj: " + subObj);
-          findSubobjects(sobObj);
+  var searchForClass = function(query, target, storage) {
+    _.each(target, function(object){
+      if (hasClass(query, object)) {
+        storage.push(object);
+      }
+      try {
+        if (object.hasChildNodes()) {
+          searchForClass(query, object.children, storage);
         }
-      });
-    }
-    catch(err) {
-    all.push(object);
-      console.log("hit bottom");
-      findClass(object);
-    }
-  };
-
-  _.each(objects, function(object){
-    findSubobjects(object);
-  });
+      }
+      catch (err) {
+      }
+      all.push(object);
+    });
+  }
+  
+  searchForClass(className, objects, matches);
 
   return matches;
 };
