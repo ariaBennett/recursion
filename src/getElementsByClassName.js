@@ -4,10 +4,9 @@
 // };
 
 // But in stead we're going to implement it from scratch:
-  all = [];
 var getElementsByClassName = function (className) {
   var objects = document.body.children;
-  matches = [];
+  var matches = [];
 
   var hasClass = function(query, target) {
     var foundClass = false;
@@ -31,7 +30,6 @@ var getElementsByClassName = function (className) {
       }
       catch (err) {
       }
-      all.push(object);
     });
   }
   
